@@ -18,33 +18,17 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.items = [
       {
-        label: 'Company',
+        label: 'Soluções',
         root: true,
         items: [
           [
             {
               items: [
-                { label: 'Features', icon: 'pi pi-list', subtext: 'Subtext of item' },
-                { label: 'Customers', icon: 'pi pi-users', subtext: 'Subtext of item' },
-                { label: 'Case Studies', icon: 'pi pi-file', subtext: 'Subtext of item' }
-              ]
-            }
-          ],
-          [
-            {
-              items: [
-                { label: 'Solutions', icon: 'pi pi-shield', subtext: 'Subtext of item' },
-                { label: 'Faq', icon: 'pi pi-question', subtext: 'Subtext of item' },
-                { label: 'Library', icon: 'pi pi-search', subtext: 'Subtext of item' }
-              ]
-            }
-          ],
-          [
-            {
-              items: [
-                { label: 'Community', icon: 'pi pi-comments', subtext: 'Subtext of item' },
-                { label: 'Rewards', icon: 'pi pi-star', subtext: 'Subtext of item' },
-                { label: 'Investors', icon: 'pi pi-globe', subtext: 'Subtext of item' }
+                { label: 'Produtos', icon: 'pi pi-cart-plus', subtext: 'Importe sua base de produtos para o sistema' },
+                { label: 'Estoque', icon: 'pi pi-box', subtext: 'Tenha o estoque digital de seus produtos' },
+                { label: 'Pedidos', icon: 'pi pi-truck', subtext: 'Faça o controle dos seus pedidos' },
+                { label: 'Previsões', icon: 'pi pi-chart-line', subtext: 'Faça previsões de pedidos' },
+                { label: 'Usuários', icon: 'pi pi-users', subtext: 'Gerencie os acessos dos seus colaboradores' },
               ]
             }
           ],
@@ -56,11 +40,11 @@ export class HomeComponent implements OnInit {
         ]
       },
       {
-        label: 'Resources',
+        label: 'Planos',
         root: true
       },
       {
-        label: 'Contact',
+        label: 'Contato',
         root: true
       }
     ];
