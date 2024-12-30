@@ -4,6 +4,11 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-root',
   imports: [RouterModule],
-  template: `<router-outlet/>`,
+  template: `
+  <main class="h-screen flex justify-center items-center p-2">
+    <section class="h-full w-full max-w-[1920px]">
+      <router-outlet/>
+    </section>
+  </main>`,
 })
 export class AppComponent { }

@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
-import { Card } from 'primeng/card';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
+import { LogoComponent } from "../../components/logo/logo.component";
 
 @Component({
   selector: 'app-login',
-  imports: [Card, FloatLabel, ButtonModule, InputTextModule, Password],
+  imports: [FloatLabel, ButtonModule, InputTextModule, Password, LogoComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })

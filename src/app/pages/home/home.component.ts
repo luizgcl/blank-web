@@ -1,14 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 
+import { RouterModule } from '@angular/router';
 import { MegaMenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { MegaMenu } from 'primeng/megamenu';
+import { LogoComponent } from "../../components/logo/logo.component";
 
 @Component({
   selector: 'app-home',
-  imports: [MegaMenu, ButtonModule, CommonModule, AvatarModule],
+  imports: [RouterModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, LogoComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
