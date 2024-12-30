@@ -29,6 +29,12 @@ export class HomeComponent implements OnInit {
                 { label: 'Produtos', icon: 'pi pi-cart-plus', subtext: 'Importe sua base de produtos para o sistema' },
                 { label: 'Estoque', icon: 'pi pi-box', subtext: 'Tenha o estoque digital de seus produtos' },
                 { label: 'Pedidos', icon: 'pi pi-truck', subtext: 'Faça o controle dos seus pedidos' },
+              ]
+            }
+          ],
+          [
+            {
+              items: [
                 { label: 'Previsões', icon: 'pi pi-chart-line', subtext: 'Faça previsões de pedidos' },
                 { label: 'Usuários', icon: 'pi pi-users', subtext: 'Gerencie os acessos dos seus colaboradores' },
               ]
