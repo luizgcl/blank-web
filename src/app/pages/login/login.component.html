@@ -1,20 +1,33 @@
-<div class="flex flex-col gap-6">
-    <app-logo />
-    <p-floatlabel variant="in">
-        <input id="username" pInputText />
-        <label for="username">E-mail</label>
-    </p-floatlabel>
-
-    <p-floatlabel variant="in">
-        <p-password id="password" [feedback]="false" [toggleMask]="true" />
-        <label for="password">Senha</label>
-    </p-floatlabel>
-
-    <p>
-        Esqueceu a senha? <a href="/reset-password">clique aqui</a>
-    </p>
-
-    <p-button>
-        Acessar
-    </p-button>
+<div class="w-[50%] flex h-full flex-col justify-center items-center">
+    <div class="w-full flex flex-col gap-8 px-10">
+        <app-logo />
+        <h2 class="font-bold text-2xl">Boas vindas ao EstoquePrev</h2>
+        <form class="mt-4 flex w-full flex-col gap-6">
+            <p-floatlabel variant="in">
+                <input id="username" class="w-full" pInputText />
+                <label for="username">E-mail ou nome de usuário</label>
+            </p-floatlabel>
+    
+            <p-floatlabel variant="in" class="w-full">
+                <p-password id="password" styleClass="w-full" inputStyleClass="w-full" [feedback]="false" [toggleMask]="true" />
+                <label for="password">Senha</label>
+            </p-floatlabel>
+    
+            <p class="flex gap-1 justify-end">
+                Esqueceu a senha? <a href="/reset-password" class="text-green-500">clique aqui</a>
+            </p>
+            
+            <p-button styleClass="w-full mt-2">
+                Acessar
+            </p-button>
+        </form>
+        <div class="flex items-center justify-between gap-2">
+            <hr class="border-gray-300 h-1 w-1/2">
+            <p>ou</p>
+            <hr class="border-gray-300 h-1 w-1/2">
+        </div>
+        <p-button styleClass="w-full mt-2" severity="contrast">
+            Conheça o Sistema
+        </p-button>
+    </div>
 </div>
