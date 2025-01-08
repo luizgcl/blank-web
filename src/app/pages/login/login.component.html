@@ -1,15 +1,24 @@
 <div class="w-[50%] flex h-full flex-col justify-center items-center">
+    <p-toast/>
     <div class="w-full flex flex-col gap-8 px-10">
         <app-logo />
         <h2 class="font-bold text-2xl">Boas vindas ao EstoquePrev</h2>
-        <form class="mt-4 flex w-full flex-col gap-6">
+        <form class="mt-4 flex w-full flex-col gap-6"
+            [formGroup]="form"
+            (ngSubmit)="handleLogin()">
             <p-floatlabel variant="in">
-                <input id="username" class="w-full" pInputText />
+                <input id="username" class="w-full" pInputText formControlName="email" />
                 <label for="username">E-mail ou nome de usuário</label>
             </p-floatlabel>
     
             <p-floatlabel variant="in" class="w-full">
-                <p-password id="password" styleClass="w-full" inputStyleClass="w-full" [feedback]="false" [toggleMask]="true" />
+                <p-password 
+                    id="password" 
+                    styleClass="w-full" 
+                    inputStyleClass="w-full" 
+                    [feedback]="false" 
+                    [toggleMask]="true"
+                    formControlName="password" />
                 <label for="password">Senha</label>
             </p-floatlabel>
     
@@ -17,7 +26,7 @@
                 Esqueceu a senha? <a href="/reset-password" class="text-green-500">clique aqui</a>
             </p>
             
-            <p-button styleClass="w-full mt-2">
+            <p-button styleClass="w-full mt-2" type="submit">
                 Acessar
             </p-button>
         </form>
@@ -26,7 +35,7 @@
             <p>ou</p>
             <hr class="border-gray-300 h-1 w-1/2">
         </div>
-        <p-button styleClass="w-full mt-2" severity="contrast">
+        <p-button styleClass="w-full mt-2" severity="contrast" type="button">
             Conheça o Sistema
         </p-button>
     </div>

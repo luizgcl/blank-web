@@ -1,17 +1,69 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
-import { LogoComponent } from "../../components/logo/logo.component";
+import { LogoComponent } from '../../components/logo/logo.component';
+import { AuthService } from '../../services/auth/auth.service';
+
+import { MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
-  imports: [FloatLabel, ButtonModule, InputTextModule, Password, LogoComponent],
+  imports: [
+    FloatLabel,
+    ButtonModule,
+    InputTextModule,
+    Password,
+    LogoComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    Toast,
+  ],
+  providers: [MessageService],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
+  authService = inject(AuthService);
+  formBuilder = inject(FormBuilder);
 
+  messageService = inject(MessageService);
+
+  form: FormGroup = this.formBuilder.group({
+    email: [null, Validators.required],
+    password: [null, Validators.required],
+  });
+
+  handleLogin() {
+    if (this.form.invalid) return;
+
+    this.authService.login(this.form.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Autenticado com sucesso',
+          detail: 'Tudo certo com seu acesso para usar o sistema',
+          life: 3000,
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Não foi possível se autenticar',
+          detail: 'Credênciais inválidas',
+          life: 3000,
+        });
+      },
+    });
+  }
 }
