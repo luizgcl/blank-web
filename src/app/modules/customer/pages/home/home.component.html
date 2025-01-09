@@ -10,7 +10,12 @@
             </p-iconfield>
         </ng-template>
         <ng-template #end>
-            <p-avatar label="LL" size="large" shape="circle" />
+            <p-avatar 
+                label="LL" 
+                size="large" 
+                shape="circle"
+                styleClass="cursor-pointer"
+                (click)="profileVisible = true" />
         </ng-template>
     </p-toolbar>
 </div>
@@ -20,4 +25,19 @@
         et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
         aliquip ex ea commodo consequat.
     </p>
+</p-drawer>
+
+<p-drawer 
+    [(visible)]="profileVisible" 
+    position="right"
+    closable="false">
+    <ng-template #header>
+        <app-user-profile-header
+            [profile]="userProfile!"
+        />
+    </ng-template>
+    <p-divider/>
+    <app-user-profile 
+        (logout)="authService.logout()"
+    />
 </p-drawer>
