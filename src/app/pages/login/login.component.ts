@@ -14,6 +14,7 @@ import { Password } from 'primeng/password';
 import { LogoComponent } from '../../components/logo/logo.component';
 import { AuthService } from '../../services/auth/auth.service';
 
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 
@@ -36,6 +37,7 @@ import { Toast } from 'primeng/toast';
 export class LoginComponent {
   authService = inject(AuthService);
   formBuilder = inject(FormBuilder);
+  router = inject(Router)
 
   messageService = inject(MessageService);
 
@@ -48,13 +50,15 @@ export class LoginComponent {
     if (this.form.invalid) return;
 
     this.authService.login(this.form.value).subscribe({
-      next: () => {
+      next: (modulePath) => {
         this.messageService.add({
           severity: 'success',
           summary: 'Autenticado com sucesso',
           detail: 'Tudo certo com seu acesso para usar o sistema',
           life: 3000,
         });
+
+        this.router.navigate([modulePath, 'home']);
       },
       error: () => {
         this.messageService.add({

@@ -6,4 +6,14 @@ export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
     { path: 'login', component: LoginComponent },
+    {
+        path: 'customer',
+        loadChildren: () => import('./modules/customer/customer.routes')
+            .then(m => m.routes),
+    },
+    {
+        path: 'admin',
+        loadChildren: () => import('./modules/admin/admin.routes')
+            .then(m => m.routes),
+    },
 ];
