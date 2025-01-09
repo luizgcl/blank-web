@@ -1,1 +1,23 @@
-<p>home works!</p>
+<div class="card">
+    <p-toolbar>
+        <ng-template #start>
+            <p-button (click)="visible = true" icon="pi pi-bars" class="mr-2" text severity="secondary" />
+        </ng-template>
+        <ng-template #center>
+            <p-iconfield iconPosition="left">
+                <p-inputicon styleClass="pi pi-play" />
+                <input type="text" pInputText placeholder="Ações Rápidas" />
+            </p-iconfield>
+        </ng-template>
+        <ng-template #end>
+            <p-avatar label="LL" size="large" shape="circle" />
+        </ng-template>
+    </p-toolbar>
+</div>
+<p-drawer [(visible)]="visible" header="Drawer">
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat.
+    </p>
+</p-drawer>
