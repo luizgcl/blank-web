@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+
+type LogoVariant = 'colored' | 'primary' | 'all-black';
 
 @Component({
   selector: 'app-logo',
@@ -7,5 +9,5 @@ import { Component } from '@angular/core';
   styleUrl: './logo.component.scss'
 })
 export class LogoComponent {
-
+  variant = input<LogoVariant>('colored')
 }

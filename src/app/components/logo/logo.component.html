@@ -1,4 +1,4 @@
 <h1 class="logo">
-    <span class="primary">estoque</span>
-    <span class="secondary">prev</span>
+    <span [class.primary]="variant() === 'primary' || variant() === 'colored'">estoque</span>
+    <span [class.primary]="variant() === 'primary'" [class.secondary]="variant() === 'colored'">prev</span>
 </h1>
