@@ -12,14 +12,16 @@ interface LoginProps {
   password: string;
 }
 
+export interface UserProfileInfo {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: "SYSADMIN" | "ADMIN" | "EMPLOYEE";
+}
+
 interface LoginResponse {
   access_token: string;
-  user_info: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: "SYSADMIN" | "ADMIN" | "EMPLOYEE";
-  };
+  user_info: UserProfileInfo;
 }
 
 @Injectable({
@@ -28,7 +30,7 @@ interface LoginResponse {
 export class AuthService {
   private httpClientt = inject(HttpClient);
   private router = inject(Router)
-  private storage: StorageService<string> = inject(StorageService);
+  private storage = inject(StorageService);
 
   login(props: LoginProps) {
     return this.httpClientt.post<LoginResponse>(`${environment.url}/auth/login`, props)
@@ -39,6 +41,7 @@ export class AuthService {
           }
 
           this.storage.setItem('_token', access_token);
+          this.storage.setItem('_profile', user_info);
 
           return 'customer';
         }),
@@ -48,7 +51,7 @@ export class AuthService {
   isAuthenticated() {
     if (!this.storage.hasItem('_token')) return false;
 
-    const token = this.storage.getItem('_token')!;
+    const token = this.storage.getItem<string>('_token')!;
 
     try {
       const decoded = jwtDecode(token);
@@ -60,8 +63,12 @@ export class AuthService {
     }
   }
 
+  getProfile(): UserProfileInfo | null {
+    return this.storage.getItem<UserProfileInfo>('_profile');
+  }
+
   logout() {
-    this.storage.removeItem('_token');
+    this.storage.clear();
     this.router.navigate(['login']);
   }
 }
