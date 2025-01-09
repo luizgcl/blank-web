@@ -49,25 +49,19 @@ export class LoginComponent {
   handleLogin() {
     if (this.form.invalid) return;
 
-    this.authService.login(this.form.value).subscribe({
-      next: (modulePath) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Autenticado com sucesso',
-          detail: 'Tudo certo com seu acesso para usar o sistema',
-          life: 3000,
-        });
-
-        this.router.navigate([modulePath, 'home']);
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Não foi possível se autenticar',
-          detail: 'Credênciais inválidas',
-          life: 3000,
-        });
-      },
-    });
+    this.authService.login(this.form.value)
+      .subscribe({
+        next: (modulePath) => {
+          this.router.navigate([modulePath, 'home']);
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Não foi possível se autenticar',
+            detail: 'Credênciais inválidas',
+            life: 3000,
+          });
+        },
+      });
   }
 }
