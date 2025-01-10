@@ -1,0 +1,38 @@
+<div class="flex items-center gap-6 text-2xl h-72">
+    <p-avatar
+        [label]="userProfile!.firstName[0]+userProfile!.lastName[0]"
+        size="xlarge"
+        shape="circle"
+    />
+    <div>
+        Olá <span class="font-bold">{{ userProfile?.firstName }} {{ userProfile?.lastName }}</span>, ótimo ver você de novo.
+    </div>
+</div>
+<div class="flex-1">
+    <h2 class="text-2xl font-bold mb-4">Estoque</h2>
+    <p-tabs value="0">
+        <p-tablist>
+            <p-tab value="0">Entradas</p-tab>
+            <p-tab value="1">Saidas</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+            <p-tabpanel value="0">
+                <div class="grid grid-cols-8">
+                    @for(o of [1,2,3,4,5,6,2,3]; track $index) {
+                        <div class=" h-32 w-32 bg-green-400 rounded-md"></div>
+                    }
+                </div>
+            </p-tabpanel>
+            <p-tabpanel value="1">
+                <div class="grid grid-cols-8">
+                    @for(o of [1,2,3,4,5,6,2,3]; track $index) {
+                        <div class=" h-32 w-32 bg-red-400 rounded-md"></div>
+                    }
+                </div>
+            </p-tabpanel>
+        </p-tabpanels>
+    </p-tabs>
+</div>
+<div class="flex items-center gap-4 text-2xl flex-1 mt-8">
+    <h2 class="text-2xl font-bold">Pedidos</h2>
+</div>

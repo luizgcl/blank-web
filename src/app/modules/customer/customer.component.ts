@@ -3,6 +3,7 @@ import { UserProfileComponent } from '@/app/components/user-profile/user-profile
 import { AuthService } from '@/app/services/auth/auth.service';
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { Breadcrumb } from 'primeng/breadcrumb';
 import { Divider } from 'primeng/divider';
 import { Drawer } from 'primeng/drawer';
 import { MenuComponent } from './components/menu/menu.component';
@@ -10,7 +11,7 @@ import { ToolbarComponent } from "./components/toolbar/toolbar.component";
 
 @Component({
   selector: 'app-customer',
-  imports: [RouterModule, MenuComponent, Drawer, Divider, UserProfileHeaderComponent, UserProfileComponent, ToolbarComponent],
+  imports: [RouterModule, Breadcrumb, MenuComponent, Drawer, Divider, UserProfileHeaderComponent, UserProfileComponent, ToolbarComponent],
   template: `
     <app-toolbar
       [profile]="userProfile!"
@@ -35,6 +36,7 @@ import { ToolbarComponent } from "./components/toolbar/toolbar.component";
             (logout)="authService.logout()"
         />
     </p-drawer>
+    <p-breadcrumb [model]="initialState" />
     <router-outlet />
   `,
 })
@@ -45,4 +47,6 @@ export class CustomerComponent {
 
   menuVisilbe = false
   profileVisible = false
+
+  initialState = [{ label: 'Home', icon: 'pi pi-home' }];
 }

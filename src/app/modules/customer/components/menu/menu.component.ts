@@ -30,6 +30,7 @@ export class MenuComponent {
     {
       label: 'Cadastros',
       icon: 'pi pi-th-large',
+      styleClass: 'mt-4',
       items: [
         { label: 'Categorias', icon: 'pi pi-tag' },
         { label: 'Produtos', icon: 'pi pi-box' },
