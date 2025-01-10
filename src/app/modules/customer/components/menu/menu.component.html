@@ -8,7 +8,7 @@
         </span>
     </ng-template>
     <ng-template #item let-item>
-        <a pRipple class="ml-2 flex gap-2 items-center p-menu-item-link">
+        <a pRipple class="ml-2 flex gap-2 items-center p-menu-item-link" [routerLink]="item.routerLink">
             <span [class]="item.icon"></span>
             <span>{{ item.label }}</span>
         </a>
