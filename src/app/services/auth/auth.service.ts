@@ -50,7 +50,7 @@ export class AuthService {
     try {
       const decoded = jwtDecode(token);
 
-      const isExpired = decoded.exp! < Date.now() / 1000;
+      const isExpired = decoded.exp! < Math.floor(Date.now() / 1000);
       return !isExpired;
     } catch {
       return false;
