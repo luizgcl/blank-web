@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { StorageService } from '../storage/storage.service';
 
+import { UserInfo } from '@/core/models/user-info';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 
@@ -12,16 +13,9 @@ interface LoginProps {
   password: string;
 }
 
-export interface UserProfileInfo {
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: "SYSADMIN" | "ADMIN" | "EMPLOYEE";
-}
-
 interface LoginResponse {
   access_token: string;
-  user_info: UserProfileInfo;
+  userInfo: UserInfo;
 }
 
 @Injectable({
@@ -35,13 +29,13 @@ export class AuthService {
   login(props: LoginProps) {
     return this.httpClientt.post<LoginResponse>(`${environment.url}/auth/login`, props)
       .pipe(
-        map(({ access_token, user_info }: LoginResponse) => {
-          if (user_info.role === 'SYSADMIN') {
+        map(({ access_token, userInfo }: LoginResponse) => {
+          if (userInfo.role === 'SYSADMIN') {
             return 'admin';
           }
 
           this.storage.setItem('_token', access_token);
-          this.storage.setItem('_profile', user_info);
+          this.storage.setItem('_profile', userInfo);
 
           return 'customer';
         }),
@@ -63,8 +57,8 @@ export class AuthService {
     }
   }
 
-  getProfile(): UserProfileInfo | null {
-    return this.storage.getItem<UserProfileInfo>('_profile');
+  getProfile(): UserInfo | null {
+    return this.storage.getItem<UserInfo>('_profile');
   }
 
   logout() {

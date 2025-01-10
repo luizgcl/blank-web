@@ -1,11 +1,11 @@
 <div class="flex gap-4">
     <p-avatar 
-        label="LL"
+        [label]="this.profile().firstName[0]+this.profile().lastName[0]"
         size="large"
         shape="circle"
     />
     <span class="flex flex-col">
-        <b>{{ profile().firstName }} {{ profile().lastName}}</b>
+        <span class="text-xl font-bold">{{ profile().firstName }} {{ profile().lastName}}</span>
         <span class="opacity-75">{{ profile().email }}</span>
     </span>
 </div>
