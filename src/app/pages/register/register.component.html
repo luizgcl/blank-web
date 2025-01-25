@@ -1,0 +1,259 @@
+<div class="flex flex-col gap-2 h-full items-stretch justify-center">
+  <div class="flex justify-between">
+    <div class="flex gap-2 flex-col justify-center">
+      <app-logo />
+      <h2 class="mt-4 font-bold text-2xl">Cadastre-se e conheça o sistema</h2>
+    </div>
+    <div class="flex justify-center items-center">
+      <img
+        src="undraw/undraw_visionary-technology_6ouq.svg"
+        alt="Ilustração de uma pessoa e vários post-its"
+        class="w-[250px] bg-cover"
+      />
+    </div>
+  </div>
+  <div
+    class="flex flex-row justify-center mt-4 card bg-gray-100 rounded-lg p-4"
+  >
+    <p-stepper [value]="1" class="basis-[60rem]">
+      <p-step-list>
+        <p-step [value]="1">Escolha do Plano</p-step>
+        <p-step [value]="2">Informações de Cadastro</p-step>
+        <p-step [value]="3">Dados para Acesso</p-step>
+        <p-step [value]="4">Confirmação</p-step>
+      </p-step-list>
+      <p-step-panels>
+        <p-step-panel [value]="1">
+          <ng-template #content let-activateCallback="activateCallback">
+            <h3 class="mt-2 text-xl font-bold mb-4 flex gap-2 items-center">
+              <i class="pi pi-tags"></i>
+              <span>Selecione um Plano</span>
+            </h3>
+            <div class="grid grid-cols-3 gap-6 my-6">
+              @for(plan of plans$ | async; track plan.id) {
+              <p-card class="grid-cols-1 truncate" styleClass="h-[250px]">
+                <ng-template #title>
+                  {{ plan.name }}
+                </ng-template>
+                <div [innerHTML]="plan.description"></div>
+                <ng-template #footer>
+                  <div class="flex justify-between items-center gap-4 mt-1">
+                    <p class="font-bold text-xl">
+                      {{
+                        plan.price
+                          | currency : "BRL" : "symbol" : "2.2-2" : "pt-BR"
+                      }}
+                    </p>
+                    <p-button
+                      [icon]="selectedPlan === plan ? 'pi pi-check' : ''"
+                      [label]="
+                        selectedPlan === plan ? 'Selecionado' : 'Selecionar'
+                      "
+                      size="large"
+                      [outlined]="selectedPlan !== plan"
+                      (onClick)="handleSelectPlan(plan)"
+                    />
+                  </div>
+                </ng-template>
+              </p-card>
+              }
+            </div>
+            <h3 class="mt-2 text-xl font-bold mb-4 flex gap-2 items-center">
+              <i class="pi pi-money-bill"></i>
+              <span>Tipo de Cobrança</span>
+            </h3>
+            <div class="flex gap-6 justify-center">
+              @for(subscriptionType of subscriptionTypes; track
+              subscriptionType.value) {
+              <p-button
+                [icon]="
+                  selectedSubscriptionType === subscriptionType
+                    ? 'pi pi-check'
+                    : ''
+                "
+                [label]="subscriptionType.label"
+                [outlined]="selectedSubscriptionType !== subscriptionType"
+                [badge]="
+                  subscriptionType.discountPercentage
+                    ? subscriptionType.discountPercentage + '% OFF'
+                    : ''
+                "
+                badgeSeverity="contrast"
+                (onClick)="handleSelectSubscriptionType(subscriptionType)"
+              />
+              }
+            </div>
+            @if (subscriptionValue > 0) {
+            <h3 class="mt-2 text-xl font-bold mb-4 flex gap-2 items-center">
+              <i class="pi pi-receipt"></i>
+              <span>Resumo</span>
+            </h3>
+            <div class="flex flex-col gap-2">
+              <div
+                class="w-full flex flex-row justify-between text-lg font-semibold"
+              >
+                <span
+                  >Valor {{ selectedSubscriptionType.label }} com
+                  Desconto:</span
+                >
+                <span class="flex-1 flex items-end px-2">
+                  <div
+                    class="w-full h-1 border-black border-spacing-1 border-b-2 border-dashed"
+                  ></div>
+                </span>
+                <span>{{ subscriptionValue | currency : "BRL" }}</span>
+              </div>
+              @if (installmentOption) {
+              <div
+                class="w-full flex flex-row justify-between text-lg font-semibold"
+              >
+                <span>Valor Total em {{ installmentOption.label }}:</span>
+                <span class="flex-1 flex items-end px-2">
+                  <div
+                    class="w-full h-1 border-black border-spacing-1 border-b-2 border-dashed"
+                  ></div>
+                </span>
+                <span>{{ installmentOption.value | currency : "BRL" }}</span>
+              </div>
+              }
+            </div>
+            <div class="mt-8 flex items-center justify-between">
+              <label for="installments"
+                >Selecione a quantidade de Parcelas</label
+              >
+              <p-select
+                id="installments"
+                [options]="subscriptionOptions"
+                optionLabel="label"
+                styleClass="min-w-[250px]"
+                (onChange)="installmentOption = $event.value"
+              />
+            </div>
+            }
+            <div class="flex pt-6 justify-end">
+              <p-button
+                label="Próximo"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="activateCallback(2)"
+              />
+            </div>
+          </ng-template>
+        </p-step-panel>
+        <p-step-panel [value]="2">
+          <ng-template #content let-activateCallback="activateCallback">
+            <form>
+              <h3 class="text-xl font-bold mb-4">
+                <i class="pi pi-building"></i>
+                Dados da Empresa
+              </h3>
+              <p-fluid class="grid grid-cols-2 gap-4">
+                <div>
+                  <label for="social_name">Razão Social</label>
+                  <input id="social_name" pInputText />
+                </div>
+                <div>
+                  <label for="name">Nome Fantasia</label>
+                  <input id="name" pInputText />
+                </div>
+                <div>
+                  <label for="document">N° de Documento</label>
+                  <input id="document" pInputText />
+                </div>
+                <div>
+                  <label for="document_type">Documento</label>
+                  <p-select [options]="documentTypes" />
+                </div>
+                <div>
+                  <label for="phone">Telefone</label>
+                  <input id="phone" pInputText />
+                </div>
+              </p-fluid>
+            </form>
+            <div class="flex pt-6 justify-between">
+              <p-button
+                label="Anterior"
+                severity="secondary"
+                icon="pi pi-arrow-left"
+                (onClick)="activateCallback(1)"
+              />
+              <p-button
+                label="Próximo"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="activateCallback(3)"
+              />
+            </div>
+          </ng-template>
+        </p-step-panel>
+        <p-step-panel [value]="3">
+          <ng-template #content let-activateCallback="activateCallback">
+            <form>
+              <h3 class="text-xl font-bold my-4">
+                <i class="pi pi-user"></i>
+                Dados Pessoais
+              </h3>
+              <p-fluid class="grid grid-cols-2 gap-4">
+                <div>
+                  <label for="first_name">Primeiro Nome</label>
+                  <input id="first_name" pInputText />
+                </div>
+                <div>
+                  <label for="last_name">Último Nome</label>
+                  <input id="last_name" pInputText />
+                </div>
+                <div>
+                  <label for="email">E-mail</label>
+                  <input id="email" type="email" pInputText />
+                </div>
+                <div>
+                  <label for="password">Senha</label>
+                  <p-password id="password" [toggleMask]="true" />
+                </div>
+                <div class="col-span-2">
+                  <label for="confirm_password">Confirmar Senha</label>
+                  <p-password
+                    id="confirm_password"
+                    [toggleMask]="true"
+                    [feedback]="false"
+                  />
+                </div>
+              </p-fluid>
+            </form>
+            <div class="flex pt-6 justify-between">
+              <p-button
+                label="Anterior"
+                severity="secondary"
+                icon="pi pi-arrow-left"
+                (onClick)="activateCallback(2)"
+              />
+              <p-button
+                label="Próximo"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="activateCallback(4)"
+              />
+            </div>
+          </ng-template>
+        </p-step-panel>
+        <p-step-panel [value]="4">
+          <ng-template #content let-activateCallback="activateCallback">
+            <h3 class="text-xl font-bold">
+              <i class="pi pi-list-check"></i>
+              Confirmação dos Dados
+            </h3>
+            <div class="flex pt-6 justify-between">
+              <p-button
+                label="Anterior"
+                severity="secondary"
+                icon="pi pi-arrow-left"
+                (onClick)="activateCallback(3)"
+              />
+              <p-button label="Concluir" icon="pi pi-save" iconPos="right" />
+            </div>
+          </ng-template>
+        </p-step-panel>
+      </p-step-panels>
+    </p-stepper>
+  </div>
+</div>
