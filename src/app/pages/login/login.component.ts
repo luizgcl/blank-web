@@ -7,28 +7,21 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { FloatLabel } from 'primeng/floatlabel';
-import { InputTextModule } from 'primeng/inputtext';
-import { Password } from 'primeng/password';
 import { LogoComponent } from '../../components/logo/logo.component';
 import { AuthService } from '../../services/auth/auth.service';
 
-import { Router } from '@angular/router';
+import { PrimeModule } from '@/app/shared/prime/prime.module';
+import { Router, RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
   imports: [
-    FloatLabel,
-    ButtonModule,
-    InputTextModule,
-    Password,
     LogoComponent,
+    RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    Toast,
+    PrimeModule,
   ],
   providers: [MessageService],
   templateUrl: './login.component.html',
@@ -37,7 +30,7 @@ import { Toast } from 'primeng/toast';
 export class LoginComponent {
   authService = inject(AuthService);
   formBuilder = inject(FormBuilder);
-  router = inject(Router)
+  router = inject(Router);
 
   messageService = inject(MessageService);
 
@@ -49,19 +42,18 @@ export class LoginComponent {
   handleLogin() {
     if (this.form.invalid) return;
 
-    this.authService.login(this.form.value)
-      .subscribe({
-        next: (modulePath) => {
-          this.router.navigate([modulePath, 'home']);
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Não foi possível se autenticar',
-            detail: 'Credênciais inválidas',
-            life: 3000,
-          });
-        },
-      });
+    this.authService.login(this.form.value).subscribe({
+      next: (modulePath) => {
+        this.router.navigate([modulePath, 'home']);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Não foi possível se autenticar',
+          detail: 'Credênciais inválidas',
+          life: 3000,
+        });
+      },
+    });
   }
 }

@@ -22,12 +22,13 @@ interface LoginResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private httpClientt = inject(HttpClient);
-  private router = inject(Router)
+  private httpClient = inject(HttpClient);
+  private router = inject(Router);
   private storage = inject(StorageService);
 
   login(props: LoginProps) {
-    return this.httpClientt.post<LoginResponse>(`${environment.url}/auth/login`, props)
+    return this.httpClient
+      .post<LoginResponse>(`${environment.url}/auth/login`, props)
       .pipe(
         map(({ access_token, userInfo }: LoginResponse) => {
           if (userInfo.role === 'SYSADMIN') {
@@ -38,7 +39,7 @@ export class AuthService {
           this.storage.setItem('_profile', userInfo);
 
           return 'customer';
-        }),
+        })
       );
   }
 
