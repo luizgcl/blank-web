@@ -97,22 +97,19 @@ export class RegisterComponent {
     planDiscount: [null, Validators.required],
   });
 
-  handleSelectPlan(plan: Plan) {
-    this.selectedPlan = plan;
-
-    this.updateTotalValue();
-    this.updateSubscriptionOptions();
-  }
-
-  handleSelectSubscriptionType(subscriptionType: SubscriptionType) {
-    this.selectedSubscriptionType = subscriptionType;
-
-    this.updateTotalValue();
-    this.updateSubscriptionOptions();
+  constructor() {
+    this.subscriptionForm.get('planId')?.statusChanges.subscribe(() => {
+      console.log(this.subscriptionForm.value);
+      this.updateTotalValue();
+    });
   }
 
   updateTotalValue() {
-    if (!this.selectedPlan || !this.selectedSubscriptionType) return;
+    if (
+      !this.subscriptionForm.value.planId ||
+      !this.subscriptionForm.value.subscriptionType
+    )
+      return;
 
     this.subscriptionValue =
       this.selectedPlan.price * this.selectedSubscriptionType.monthQuantity;

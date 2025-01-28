@@ -12,10 +12,8 @@
       />
     </div>
   </div>
-  <div
-    class="flex flex-row justify-center mt-4 card bg-gray-100 rounded-lg p-4"
-  >
-    <p-stepper [value]="1" class="basis-[60rem]">
+  <div class="flex flex-row justify-center mt-4 card bg-gray-50 rounded-lg p-4">
+    <p-stepper [value]="1" class="basis-[60rem]" [linear]="true">
       <p-step-list>
         <p-step [value]="1">Escolha do Plano</p-step>
         <p-step [value]="2">Informações de Cadastro</p-step>
@@ -23,7 +21,7 @@
         <p-step [value]="4">Confirmação</p-step>
       </p-step-list>
       <p-step-panels>
-        <p-step-panel [value]="1">
+        <p-step-panel [value]="1" [formGroup]="subscriptionForm">
           <ng-template #content let-activateCallback="activateCallback">
             <h3 class="mt-2 text-xl font-bold mb-4 flex gap-2 items-center">
               <i class="pi pi-tags"></i>
@@ -44,15 +42,27 @@
                           | currency : "BRL" : "symbol" : "2.2-2" : "pt-BR"
                       }}
                     </p>
-                    <p-button
-                      [icon]="selectedPlan === plan ? 'pi pi-check' : ''"
-                      [label]="
-                        selectedPlan === plan ? 'Selecionado' : 'Selecionar'
-                      "
-                      size="large"
-                      [outlined]="selectedPlan !== plan"
-                      (onClick)="handleSelectPlan(plan)"
+                    <input
+                      type="radio"
+                      [id]="'plan-' + plan.id"
+                      name="planId"
+                      [value]="plan.id"
+                      formControlName="planId"
+                      class="hidden peer"
                     />
+                    <label
+                      [htmlFor]="'plan-' + plan.id"
+                      pButton
+                      class="p-button-outlined peer-checked:bg-primary-500 peer-checked:text-gray-100 flex items-center gap-2"
+                    >
+                      @if(subscriptionForm.value.planId! === plan.id) {
+                      <i class="pi pi-check"></i>
+                      }
+                      <span class="font-semibold">
+                        @if(subscriptionForm.value.planId! === plan.id) {
+                        Selecionado } @else { Selecionar }
+                      </span>
+                    </label>
                   </div>
                 </ng-template>
               </p-card>
@@ -65,22 +75,36 @@
             <div class="flex gap-6 justify-center">
               @for(subscriptionType of subscriptionTypes; track
               subscriptionType.value) {
-              <p-button
-                [icon]="
-                  selectedSubscriptionType === subscriptionType
-                    ? 'pi pi-check'
-                    : ''
-                "
-                [label]="subscriptionType.label"
-                [outlined]="selectedSubscriptionType !== subscriptionType"
-                [badge]="
-                  subscriptionType.discountPercentage
-                    ? subscriptionType.discountPercentage + '% OFF'
-                    : ''
-                "
-                badgeSeverity="contrast"
-                (onClick)="handleSelectSubscriptionType(subscriptionType)"
-              />
+              <div>
+                <input
+                  type="radio"
+                  [id]="'type-' + subscriptionType.value"
+                  name="subscriptionType"
+                  formControlName="subscriptionType"
+                  [value]="subscriptionType.value"
+                  class="hidden peer"
+                />
+                <label
+                  [htmlFor]="'type-' + subscriptionType.value"
+                  pButton
+                  class="p-button-outlined peer-checked:bg-primary-500 peer-checked:text-gray-100 flex items-center gap-2"
+                >
+                  @if (subscriptionForm.value.subscriptionType! ===
+                  subscriptionType.value) {
+                  <i class="pi pi-check"></i>
+                  }
+                  <span class="font-semibold">
+                    {{ subscriptionType.label }}
+                  </span>
+                  @if(subscriptionType.discountPercentage) {
+                  <p-badge
+                    size="large"
+                    severity="contrast"
+                    [value]="subscriptionType.discountPercentage + '% OFF'"
+                  />
+                  }
+                </label>
+              </div>
               }
             </div>
             @if (subscriptionValue > 0) {
