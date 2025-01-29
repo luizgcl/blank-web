@@ -104,6 +104,8 @@ export class RegisterComponent {
     });
   }
 
+  // TODO: verificar como pegar os dados dos itens selecionados para poder atualizar o valor
+
   updateTotalValue() {
     if (
       !this.subscriptionForm.value.planId ||
