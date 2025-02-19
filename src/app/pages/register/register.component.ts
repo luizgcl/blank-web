@@ -96,4 +96,16 @@ export class RegisterComponent {
     installmentTotalValue: [null, Validators.required],
     planDiscount: [null, Validators.required],
   });
+
+  userForm = this.formBuilder.group({
+    companyName: [null],
+    firstName: [null],
+    lastName: [null],
+    email: [null],
+    documentNumber: [null],
+    documentType: [null],
+    phone: [null],
+    password: [null],
+    confirmPassword: [null],
+  });
 }
