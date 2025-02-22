@@ -1,28 +1,24 @@
 import { LogoComponent } from '@/app/components/logo/logo.component';
 import { PlansService } from '@/app/services/plans/plans.service';
 import { PrimeModule } from '@/app/shared/prime/prime.module';
-import { Plan } from '@/core/models/plan';
-import { CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
+  FormControl,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+
+type SubscriptionTypeValue = 'MONTHLY' | 'QUARTERLY' | 'BIANNUAL' | 'YEARLY';
+type DocumentType = 'CPF' | 'CNPJ';
 
 interface SubscriptionType {
   label: string;
   value: 'MONTHLY' | 'QUARTERLY' | 'BIANNUAL' | 'YEARLY';
   discountPercentage: number;
   monthQuantity: number;
-}
-
-interface InstallmentOption {
-  label: string;
-  value: number;
-  installmentValue: number;
-  quantity: number;
 }
 
 @Component({
@@ -33,6 +29,7 @@ interface InstallmentOption {
     FormsModule,
     ReactiveFormsModule,
     CurrencyPipe,
+    CommonModule,
   ],
   providers: [CurrencyPipe],
   templateUrl: './register.component.html',
@@ -44,8 +41,9 @@ export class RegisterComponent {
   currencyPipe = inject(CurrencyPipe);
 
   plans$ = this.plansService.fetchPlans();
+  selectedPlanValue: number | null = null;
 
-  selectedPlan!: Plan;
+  documentTypes = ['CPF', 'CNPJ'];
 
   subscriptionTypes: SubscriptionType[] = [
     {
@@ -74,38 +72,54 @@ export class RegisterComponent {
     },
   ];
 
-  selectedSubscriptionType!: SubscriptionType;
-
-  subscriptionValue = 0;
-
-  installmentOption!: InstallmentOption;
-
-  subscriptionOptions: InstallmentOption[] = [];
-
-  totalValue = 0;
-
-  documentTypes = ['CPF', 'CNPJ'];
-
-  selectedDocumentType!: 'CPF' | 'CNPJ';
-
   subscriptionForm = this.formBuilder.group({
-    planId: [null, Validators.required],
-    subscriptionType: [null, Validators.required],
-    installments: [null, Validators.required],
-    installmentValue: [null, Validators.required],
-    installmentTotalValue: [null, Validators.required],
-    planDiscount: [null, Validators.required],
+    planId: new FormControl<number | null>(null, Validators.required),
+    subscriptionType: new FormControl<SubscriptionTypeValue | null>(
+      null,
+      Validators.required
+    ),
+    installments: new FormControl<number | null>(null, Validators.required),
+    planDiscount: new FormControl<number | null>(null, Validators.required),
   });
 
   userForm = this.formBuilder.group({
     companyName: [null],
     firstName: [null],
     lastName: [null],
-    email: [null],
+    email: [null, [Validators.required, Validators.email]],
     documentNumber: [null],
-    documentType: [null],
+    documentType: new FormControl<DocumentType | null>(
+      'CPF',
+      Validators.required
+    ),
     phone: [null],
     password: [null],
     confirmPassword: [null],
   });
+
+  constructor() {
+    this.subscriptionForm.get('planId')!.valueChanges.subscribe((id) => {
+      this.plans$.subscribe((plans) => {
+        this.selectedPlanValue =
+          plans.find((plan) => plan.id === id)?.price ?? null;
+      });
+    });
+  }
+
+  handleSelectSubscriptionType(subscriptionType: SubscriptionType) {
+    this.subscriptionForm.patchValue({
+      subscriptionType: subscriptionType.value,
+      planDiscount: subscriptionType.discountPercentage,
+      installments: subscriptionType.monthQuantity,
+    });
+  }
+
+  getPlanValueWithDiscount(value: number) {
+    const { installments, planDiscount } = this.subscriptionForm.value;
+
+    const discountValue =
+      (value * (installments ?? 1) * (planDiscount ?? 0)) / 100;
+
+    return value * (installments ?? 1) - discountValue;
+  }
 }

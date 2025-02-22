@@ -2,7 +2,7 @@
   <div class="flex items-center justify-center mt-2">
     <app-logo />
   </div>
-  <div class="mt-4 bg-stone-200 flex-1 rounded-xl px-4 py-6">
+  <div class="mt-4 bg-white flex-1 rounded-xl px-4 py-6">
     <p-stepper [value]="1" [linear]="true">
       <p-step-list>
         <p-step [value]="1">Escolha do Plano</p-step>
@@ -12,24 +12,110 @@
       <p-step-panels>
         <p-step-panel [value]="1">
           <ng-template #content let-activateCallback="activateCallback">
-            <div class="grid grid-cols-3 gap-4 min-h-[500px]">
-              @for(plan of plans$ | async; track plan.id) {
-              <p-card>
-                <ng-template #title>
-                  {{ plan.name }}
-                </ng-template>
-                <ng-template #content>
-                  <p [innerHtml]="plan.description"></p>
-                </ng-template>
-                <ng-template #footer>
-                  <div class="flex flex-col gap-2">
-                    <span> {{ plan.price | currency : "BRL" }} por mês </span>
-                    <p-button label="Selecionar" />
-                  </div>
-                </ng-template>
-              </p-card>
+            <form
+              class="min-h-[500px] 2xl:min-h-[690px]"
+              [formGroup]="subscriptionForm"
+            >
+              <div class="grid grid-cols-3 gap-4">
+                @for(plan of plans$ | async; track plan.id) {
+                <p-card
+                  [styleClass]="
+                    subscriptionForm.value.planId! === plan.id
+                      ? 'border-2 border-emerald-500'
+                      : ''
+                  "
+                >
+                  <ng-template #title>
+                    {{ plan.name }}
+                  </ng-template>
+                  <p-divider />
+                  <ng-template #content>
+                    <p [innerHtml]="plan.description"></p>
+                  </ng-template>
+                  <ng-template #footer>
+                    <p-divider />
+                    <div class="flex flex-col gap-2">
+                      <p>
+                        <span class="text-2xl font-semibold">{{
+                          plan.price | currency : "BRL"
+                        }}</span>
+                        por mês
+                      </p>
+                      <input
+                        type="radio"
+                        name="planId"
+                        formControlName="planId"
+                        class="hidden peer"
+                        [id]="'plan-' + plan.id"
+                        [value]="plan.id"
+                      />
+                      <div class="w-full flex justify-center mt-4">
+                        <label
+                          [htmlFor]="'plan-' + plan.id"
+                          pButton
+                          class="w-11/12"
+                        >
+                          Seleciona{{
+                            subscriptionForm.value.planId! !== plan.id
+                              ? "r"
+                              : "do"
+                          }}
+                        </label>
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-card>
+                }
+              </div>
+              <div class="mt-8 flex justify-center items-center gap-6">
+                @for(subscriptionType of subscriptionTypes; track $index) {
+                <div>
+                  <input
+                    type="radio"
+                    name="subscriptionType"
+                    formControlName="subscriptionType"
+                    [value]="subscriptionType.value"
+                    [id]="'SUB-' + subscriptionType.value"
+                    class="hidden peer"
+                    (change)="handleSelectSubscriptionType(subscriptionType)"
+                  />
+                  <label
+                    [htmlFor]="'SUB-' + subscriptionType.value"
+                    class="outline outline-emerald-500 cursor-pointer peer-checked:bg-emerald-500 peer-checked:text-gray-100 p-2 rounded-md flex gap-2 items-center justify-center select-none"
+                  >
+                    {{ subscriptionType.label }}
+                    @if(subscriptionType.discountPercentage) {
+                    <p-badge
+                      severity="contrast"
+                      [value]="subscriptionType.discountPercentage + '%'"
+                    />
+                    }
+                  </label>
+                </div>
+                }
+              </div>
+              @if (selectedPlanValue) {
+              <div class="mt-8 flex flex-col gap-2 items-end">
+                <p-divider />
+                <span class="text-xl font-bold">
+                  Valor sem desconto:
+                  {{
+                    selectedPlanValue *
+                      (subscriptionForm.value.installments ?? 1)
+                      | currency : "BRL"
+                  }}
+                </span>
+                <span class="text-xl font-bold">
+                  Valor com desconto:
+                  {{
+                    getPlanValueWithDiscount(selectedPlanValue)
+                      | currency : "BRL"
+                  }}
+                </span>
+                <p-divider />
+              </div>
               }
-            </div>
+            </form>
             <div class="flex pt-6 justify-end">
               <p-button
                 label="Próximo"
@@ -42,44 +128,87 @@
         </p-step-panel>
         <p-step-panel [value]="2">
           <ng-template #content let-activateCallback="activateCallback">
-            <form class="min-h-[500px]">
+            <form
+              class="min-h-[500px] 2xl:min-h-[690px]"
+              [formGroup]="userForm"
+            >
               <p-fluid class="grid grid-cols-2 gap-4">
                 <div class="col-span-full">
                   <label for="social_name">Nome da Empresa</label>
-                  <input id="social_name" pInputText />
+                  <input
+                    id="social_name"
+                    formControlName="companyName"
+                    pInputText
+                  />
                 </div>
                 <div>
                   <label for="first_name">Primeiro Nome</label>
-                  <input id="first_name" pInputText />
+                  <input
+                    id="first_name"
+                    formControlName="firstName"
+                    pInputText
+                  />
                 </div>
                 <div>
                   <label for="last_name">Último Nome</label>
-                  <input id="last_name" pInputText />
+                  <input id="last_name" formControlName="lastName" pInputText />
                 </div>
                 <div>
                   <label for="document">N° de Documento</label>
-                  <input id="document" pInputText />
+                  @switch (userForm.value.documentType) { @case ("CPF") {
+                  <p-inputmask
+                    mask="999.999.999-99"
+                    unmask
+                    id="document"
+                    formControlName="documentNumber"
+                  />
+                  } @case ("CNPJ") {
+                  <p-inputmask
+                    mask="99.999.999/9999-99"
+                    unmask
+                    id="document"
+                    formControlName="documentNumber"
+                  />
+                  } }
                 </div>
                 <div>
                   <label for="document_type">Documento</label>
-                  <p-select [options]="documentTypes" />
+                  <p-select
+                    [options]="documentTypes"
+                    formControlName="documentType"
+                  />
                 </div>
                 <div>
                   <label for="phone">Telefone</label>
-                  <input id="phone" pInputText />
+                  <p-inputmask
+                    mask="+99 9 9999-9999"
+                    unmask
+                    id="phone"
+                    formControlName="phone"
+                  />
                 </div>
                 <div>
                   <label for="email">E-mail</label>
-                  <input id="email" type="email" pInputText />
+                  <input
+                    id="email"
+                    type="email"
+                    formControlName="email"
+                    pInputText
+                  />
                 </div>
                 <div>
                   <label for="password">Senha</label>
-                  <p-password id="password" [toggleMask]="true" />
+                  <p-password
+                    id="password"
+                    formControlName="password"
+                    [toggleMask]="true"
+                  />
                 </div>
                 <div>
                   <label for="confirm_password">Confirmar Senha</label>
                   <p-password
                     id="confirm_password"
+                    formControlName="confirmPassword"
                     [toggleMask]="true"
                     [feedback]="false"
                   />
@@ -104,7 +233,10 @@
         </p-step-panel>
         <p-step-panel [value]="3">
           <ng-template #content let-activateCallback="activateCallback">
-            <div class="min-h-[500px]"></div>
+            <div class="min-h-[500px] 2xl:min-h-[690px]">
+              {{ subscriptionForm.value | json }}
+              {{ userForm.value | json }}
+            </div>
             <div class="flex pt-6 justify-end gap-2">
               <p-button
                 label="Anterior"
