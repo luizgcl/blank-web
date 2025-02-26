@@ -18,6 +18,20 @@ interface LoginResponse {
   userInfo: UserInfo;
 }
 
+interface RegisterProps {
+  name: string;
+  firstName: string;
+  lastName: string;
+  document: string;
+  documentType: string;
+  email: string;
+  phone: string;
+  planId: number;
+  installments: number;
+  planDiscount: number;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -41,6 +55,10 @@ export class AuthService {
           return 'customer';
         })
       );
+  }
+
+  register(props: RegisterProps) {
+    return this.httpClient.post(`${environment.url}/auth/register`, props);
   }
 
   isAuthenticated() {

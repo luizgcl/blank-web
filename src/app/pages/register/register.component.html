@@ -3,6 +3,7 @@
     <app-logo />
   </div>
   <div class="mt-4 bg-white flex-1 rounded-xl px-4 py-6">
+    <p-toast />
     <p-stepper [value]="1" [linear]="true">
       <p-step-list>
         <p-step [value]="1">Escolha do Plano</p-step>
@@ -244,7 +245,13 @@
                 icon="pi pi-arrow-left"
                 (onClick)="activateCallback(2)"
               />
-              <p-button label="Cadastrar" icon="pi pi-check" iconPos="left" />
+              <p-button
+                label="Cadastrar"
+                icon="pi pi-check"
+                iconPos="left"
+                [disabled]="userForm.invalid || subscriptionForm.invalid"
+                (onClick)="handleSubmitRegister()"
+              />
             </div>
           </ng-template>
         </p-step-panel>

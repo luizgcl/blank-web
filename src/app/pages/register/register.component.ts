@@ -1,4 +1,5 @@
 import { LogoComponent } from '@/app/components/logo/logo.component';
+import { AuthService } from '@/app/services/auth/auth.service';
 import { PlansService } from '@/app/services/plans/plans.service';
 import { PrimeModule } from '@/app/shared/prime/prime.module';
 import { CommonModule, CurrencyPipe } from '@angular/common';
@@ -10,6 +11,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 type SubscriptionTypeValue = 'MONTHLY' | 'QUARTERLY' | 'BIANNUAL' | 'YEARLY';
 type DocumentType = 'CPF' | 'CNPJ';
@@ -31,7 +34,7 @@ interface SubscriptionType {
     CurrencyPipe,
     CommonModule,
   ],
-  providers: [CurrencyPipe],
+  providers: [CurrencyPipe, MessageService],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
@@ -39,6 +42,11 @@ export class RegisterComponent {
   plansService = inject(PlansService);
   formBuilder = inject(FormBuilder);
   currencyPipe = inject(CurrencyPipe);
+  router = inject(Router);
+
+  messageService = inject(MessageService);
+
+  authService = inject(AuthService);
 
   plans$ = this.plansService.fetchPlans();
   selectedPlanValue: number | null = null;
@@ -121,5 +129,35 @@ export class RegisterComponent {
       (value * (installments ?? 1) * (planDiscount ?? 0)) / 100;
 
     return value * (installments ?? 1) - discountValue;
+  }
+
+  handleSubmitRegister() {
+    const payload = {
+      name: this.userForm.value.companyName!,
+      firstName: this.userForm.value.firstName!,
+      lastName: this.userForm.value.lastName!,
+      document: this.userForm.value.documentNumber!,
+      documentType: this.userForm.value.documentType!,
+      email: this.userForm.value.email!,
+      installments: this.subscriptionForm.value.installments!,
+      planId: this.subscriptionForm.value.planId!,
+      phone: this.userForm.value.phone!,
+      planDiscount: this.subscriptionForm.value.planDiscount!,
+      password: this.userForm.value.password!,
+    };
+
+    this.authService.register(payload).subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Não foi possível se registrar',
+          detail: 'Houve um erro ao se cadastrar',
+          life: 3000,
+        });
+      },
+    });
   }
 }
